@@ -2,6 +2,9 @@
 
 require_once(dirname(__DIR__) . '/src/wrap.php');
 
+/**
+ * Tests for wrap().
+ */
 class WrapTestCase extends PHPUnit_Framework_TestCase {
 
     //
@@ -38,16 +41,19 @@ class WrapTestCase extends PHPUnit_Framework_TestCase {
 
         $string = "one\ntwo\nthree";
         $expected = $string;
-        $actual = wrap($string, 5);
+        $actual = wrap($string, strlen('three'));
 
         $this->assertEquals($expected, $actual);
 
     }
 
+    //
+    // It should wrap lines longer than $length.
+    //
     public function test_wrap_output_line_longer_than_length() {
 
-        $string = "This is a long line right here\nThis is not long.";
-        $expected = "This is a long line\nright here\nThis is not long.";
+        $string = "This is a long line right here\nThis is a long line right here\nThis is not long.";
+        $expected = "This is a long line\nright here\nThis is a long line\nright here\nThis is not long.";
         $actual = wrap($string, strlen('This is a long line'));
 
         $this->assertEquals($expected, $actual);
@@ -55,63 +61,55 @@ class WrapTestCase extends PHPUnit_Framework_TestCase {
     }
 
     //
-    // It should break a word which is longer than $length.
+    // It should compress whitespace between words when wrapping.
     //
-    // public function test_wrap_output_word_longer_than_length() {
+    public function test_wrap_output_whitespace_compressed() {
 
-        // $string = 'Reallylongwordwithnobreaks';
-        // $expected = "Reallylongword\nwithnobreaks";
-        // $actual = wrap($string, strlen('Reallylongword'));
-        //
-        // $this->assertEquals($expected, $actual);
+        $string = "Whitespace between\t \t words\nWhitespace between\r\rwords";
+        $expected = "Whitespace between\nwords\nWhitespace between\nwords";
+        $actual = wrap($string, strlen("Whitespace between"));
 
-    // }
+        $this->assertEquals($expected, $actual);
 
-    // public function test_wrap_output_string_longer_than_length() {
+    }
 
-//        $string = 'This line is longer than length.';
-//        $expected = "This line is\nlonger than length";
-//        $actual = wrap($string, strlen('This line is'));
-//
-//        $this->assertEquals($expected, $actual);
-
-    // }
-
-    // public function test_wrap_output_preserves_whitespace_at_start() {
-
-//        $string = " \n\t Whitespace at start";
-//        $expected = " \n\t Whitespace\nat start";
-//        $actual = wrap($string, strlen(" \n\t Whitespace"));
-//
-//        $this->assertEquals($expected, $actual);
-
-    // }
-
-    // public function test_wrap_output_preserves_whitespace_at_end() {
-
-        // TODO.
-
-    // }
-
-
-    // //
-    // // It should throw an exception if parameter $string is wrong type.
-    // //
-    // public function test_wrap_throws_incorrect_type_string() {
     //
-    //     $this->setExpectedException('WrapException');
-    //     $actual = wrap(new stdClass(), 7);
+    // It should preserve leading and trailing whitespace.
     //
-    // }
+    public function test_wrap_output_preserve_leading_and_trailing_whitespace() {
+
+        $string = "\t\r  Leading and trailing whitespace\t \t";
+        $expected = "\t\r  Leading and trailing\nwhitespace\t \t";
+        $actual = wrap($string, strlen("\t\r  Leading and trailing"));
+
+        $this->assertEquals($expected, $actual);
+
+    }
+
     //
-    // //
-    // // It should throw an exception if parameter $length is wrong type.
-    // //
-    // public function test_wrap_throws_incorrect_type_length() {
+    // It should break words longer than $length.
     //
-    //     $this->setExpectedException('WrapException');
-    //     $actual = wrap('test', '42');
+    public function test_wrap_output_break_word_longer_than_length() {
+
+        $string = "\r\0 \tThisisalongwordlongerthanlength ";
+        $expected = "\r\0 \tThisisalongword\nlongerthanlength ";
+        $actual = wrap($string, strlen("\r\0 \tThisisalongword"));
+
+        $this->assertEquals($expected, $actual);
+
+    }
+
     //
-    // }
+    // It should preserve whitespace when wrapping if no words are present.
+    //
+    public function test_wrap_output_only_preserve_whitespace_without_words() {
+
+        $string = "\t\t\t\t \n\t\t\t\t  ";
+        $expected = "\t\t\t\n\t \n\t\t\t\n\t  ";
+        $actual = wrap($string, 3);
+
+        $this->assertEquals($expected, $actual);
+
+    }
 
 }

@@ -51,22 +51,40 @@ function wrap($string, $length, $lineend="\n") {
         }
 
         // Line needs wrapping. Create an array by
-        // splitting on word-boundaries.
-        $fragments = preg_split('/\b/', $linesplit[0]);
+        // effectively splitting at word-boundaries.
+        $fragments = preg_split('/(\s+)/', $linesplit[0], null, PREG_SPLIT_DELIM_CAPTURE);
 
         $wrappedline = '';
         $remaining = '';
 
         foreach ($fragments as $i => $fragment) {
 
-            if (strlen($wrappedline . $fragment) <= $length) {
+            $wrappedlinelength = strlen($wrappedline);
+            $fragmentlength = strlen($fragment);
+
+            // We will not exceed $length so add $fragment.
+            if (($wrappedlinelength + $fragmentlength) <= $length) {
                 $wrappedline .= $fragment;
                 continue;
             }
 
+            // $fragment is longer than $length therefore we must split it.
+            if ($fragmentlength > $length) {
+                $charsleft = $length - $wrappedlinelength;
+                $wrappedline .= substr($fragment, 0, $charsleft);
+                $fragments[$i] = substr($fragment, $charsleft);
+            }
+
             // Adding $fragment would exceed $length so break the line.
-            $wrappedline = rtrim($wrappedline) . $lineend;
-            $remaining = ltrim(implode('', array_slice($fragments, $i)));
+            $remaining = implode('', array_slice($fragments, $i));
+
+            // If wrapping between words collapse white space.
+            if (trim($wrappedline) !== '' && trim($remaining) !== '') {
+                $wrappedline = rtrim($wrappedline);
+                $remaining = ltrim($remaining);
+            }
+
+            $wrappedline .= $lineend;
             $remaining .= ($islastline) ? '' : $lineend;
             break;
 
