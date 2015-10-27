@@ -138,4 +138,27 @@ class WrapTestCase extends PHPUnit_Framework_TestCase {
 
     }
 
+    //
+    // It should return an empty string if passed one.
+    //
+    public function test_wrap_output_empty_string() {
+
+        $string = '';
+        $expected = '';
+        $actual = wrap($string, 1);
+
+        $this->assertEquals($expected, $actual);
+
+    }
+
+    //
+    // It should throw an error if $length is less than 1.
+    //
+    public function test_wrap_output_length_less_than_one() {
+
+        $this->setExpectedException('WrapException');
+        $actual = wrap('A string.', 0);
+
+    }
+
 }

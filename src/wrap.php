@@ -7,6 +7,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPL v3 or later.
  */
 
+class WrapException extends Exception {}
+
 /**
  * Fold a given string when longer than a given length.
  *
@@ -23,13 +25,17 @@
  * Note: This function is not currently multibyte safe.
  *
  * @param string $string The string to wrap.
- * @param int $length    The maximum length of a line.
+ * @param int $length    The maximum length of a line and greater than 0.
  * @param bool $lineend  Optional. Allow line end to be passed
  *                       for portability (e.g. so PHP_EOL may
  *                       be passed in to support Windows).
  * @return string
  */
 function wrap($string, $length, $lineend="\n") {
+
+    if ($length < 1) {
+        throw new WrapException('$length must be greater than zero.');
+    }
 
     $wrappedstring  = '';
 
