@@ -13,7 +13,7 @@ Clone the repository and use `composer` to install test dependencies.
 
 ```
 % cd /path/to/install/dir
-% git clone
+% git clone https://github.com/jobyh/wrap.git
 % composer install
 ```
 
