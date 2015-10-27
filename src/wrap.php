@@ -3,6 +3,11 @@
 // Can't namespace functions until PHP 5.6
 
 /**
+ * @copyright 2015 Joby Harding <http://iamjoby.com>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPL v3 or later.
+ */
+
+/**
  * Fold a given string when longer than a given length.
  *
  * Returns $string folded with newline at each $length
