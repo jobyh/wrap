@@ -19,7 +19,7 @@ Clone the repository and use `composer` to install test dependencies.
 
 ##Usage
 
-```
+```php
 <?php
 
 require_once('/path/to/wrap/src/wrap.php');
