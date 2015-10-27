@@ -14,8 +14,17 @@ Clone the repository and use `composer` to install test dependencies.
 ```
 % cd /path/to/install/dir
 % git clone https://github.com/jobyh/wrap.git
-% cd wrap
 % composer install
+```
+
+##Usage
+
+```
+<?php
+
+require_once('/path/to/wrap/src/wrap.php');
+
+wrap('My long string to wrap!', 7);
 ```
 
 ##Tests
