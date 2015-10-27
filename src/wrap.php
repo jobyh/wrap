@@ -8,14 +8,14 @@
  * Returns $string folded with newline at each $length
  * characters. Newline defaults to the Unix newline \n
  * but this can be made platform-specific (\r\n on Windows)
- * by passing the optional parameter $lineend.
- *
- * This function is not currently multibyte safe.
+ * by passing optional parameter $lineend.
  *
  * The wrap function will attempt to wrap at word breaks
  * where possible. When folding on a word break all
  * whitespace characters will be replaced with the
  * newline character. Other whitespace will be preserved.
+ *
+ * Note: This function is not currently multibyte safe.
  *
  * @param string $string The string to wrap.
  * @param int $length    The maximum length of a line.
@@ -54,7 +54,7 @@ function wrap($string, $length, $lineend="\n") {
         // effectively splitting at word-boundaries.
         // We use this method rather than the regex
         // /\b/ as we want to treat hyphenated words
-        // as a single text block (not 'foo' '-' 'bar').
+        // as a single word ('foo-bar' not 'foo' '-' 'bar').
         $fragments = preg_split('/(\s+)/', $linesplit[0], null, PREG_SPLIT_DELIM_CAPTURE);
 
         $wrappedline = '';
@@ -79,7 +79,7 @@ function wrap($string, $length, $lineend="\n") {
                 $fragments[$i] = substr($fragment, $charsleft);
             }
 
-            // Adding $fragment would exceed $length so break the line.
+            // Break the line.
             $remaining = implode('', array_slice($fragments, $i));
 
             // If wrapping between words collapse white space.
