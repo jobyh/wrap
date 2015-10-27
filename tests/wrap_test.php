@@ -106,7 +106,33 @@ class WrapTestCase extends PHPUnit_Framework_TestCase {
 
         $string = "\t\t\t\t \n\t\t\t\t  ";
         $expected = "\t\t\t\n\t \n\t\t\t\n\t  ";
-        $actual = wrap($string, 3);
+        $actual = wrap($string, strlen("\t\t\t"));
+
+        $this->assertEquals($expected, $actual);
+
+    }
+
+    //
+    // It should preserve whitespace when wrapping single word and whitespace.
+    //
+    public function test_wrap_output_only_preserve_trailing_whitespace_single_word() {
+
+        $string = "singleword\t\t";
+        $expected = "singleword\t\n\t";
+        $actual = wrap($string, strlen("singleword\t"));
+
+        $this->assertEquals($expected, $actual);
+
+    }
+
+    //
+    // It should use a provided newline character if passed.
+    //
+    public function test_wrap_output_use_custom_newline() {
+
+        $string = "one\r\none one";
+        $expected = "one\r\none\r\none";
+        $actual = wrap($string, strlen('one'), "\r\n");
 
         $this->assertEquals($expected, $actual);
 

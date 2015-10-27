@@ -52,6 +52,9 @@ function wrap($string, $length, $lineend="\n") {
 
         // Line needs wrapping. Create an array by
         // effectively splitting at word-boundaries.
+        // We use this method rather than the regex
+        // /\b/ as we want to treat hyphenated words
+        // as a single text block (not 'foo' '-' 'bar').
         $fragments = preg_split('/(\s+)/', $linesplit[0], null, PREG_SPLIT_DELIM_CAPTURE);
 
         $wrappedline = '';
@@ -68,8 +71,9 @@ function wrap($string, $length, $lineend="\n") {
                 continue;
             }
 
-            // $fragment is longer than $length therefore we must split it.
-            if ($fragmentlength > $length) {
+            // $fragment is longer than $length or is just remaining
+            // whitespace therefore we must split it.
+            if ($fragmentlength > $length || trim($fragment) === '') {
                 $charsleft = $length - $wrappedlinelength;
                 $wrappedline .= substr($fragment, 0, $charsleft);
                 $fragments[$i] = substr($fragment, $charsleft);
